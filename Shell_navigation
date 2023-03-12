@@ -1,0 +1,157 @@
+# Shell Navigation
++ The shell is a program that takes keyboard commands and passes them to the operating system to carry out. Almost all Linux distributions supply a shell program from the GNU Project called
+bash. The name “bash” is an acronym for “Bourne Again SHell”, a reference to the fact bash is an enhanced replacement for sh, the original Unix shell program written by Steve Bourne.
+
+## Navigation
+
++ This lesson introduced the first three major(mostly used) commands: 
+- pwd (print working directory)
+- cd (change directory)
+- ls (list files and directories)
+
+## File System Organization
+
++ Like Windows, the files on a Linux system are arranged in a hierarchial directory structure in a tree-like pattern of directories (called folders in other systems), which may contain files and subdirectories. The first directory in the file system is called the root directory. The root directory contains files and subdirectories, which contain more files and subdirectories and so on.
++ One important difference between Windows and Unix-like operating systems such as Linux is that Linux does not employ the concept of drive letters. While Windows drive letters split the file system into a series of different trees (one for each device), Linux always has a single tree. Different storage devices may be different branches of the tree, but there is always just a single tree.
+
+#### pwd
+
++ This command is use to show the directory we are standing in also called the **working directory.**
++ When we first log on to our Linux system, the working directory is set to our **home directory**. This is where we put our files. On most systems, the home directory will be called /home/user_name, but it can be anything according to the whims of the system administrator.
+
+#### cd
+
++To change the working directory (where we are standing in the maze) we use the cd command. To do this, we type cd followed by the pathname of the desired working directory. A pathname is the route we take along the branches of the tree to get to the directory we want. Pathnames can be specified two different ways; 
+1. **absolute pathnames**
+
++ An absolute pathname begins with the root directory and follows the tree branch by branch until the path to the desired directory or file is completed. For example, there is a directory on your system in which most programs are installed. The pathname of the directory is /usr/bin. This means from the root directory (represented by the leading slash in the pathname) there is a directory called "usr" which contains a directory called "bin".
+
+2. **relative pathnames**
+
++ Where an absolute pathname starts from the root directory and leads to its destination, a relative pathname starts from the working directory. To do this, it uses a couple of special notations to represent relative positions in the file system tree. These special notations are "." (dot) and ".." (dot dot). The "." notation refers to the working directory itself and the ".." notation refers to the working directory's parent directory.
++ If we type cd followed by nothing, cd will change the working directory to our home directory.A related shortcut is to type cd ~user_name. In this case, cd will change the working directory to the home directory of the specified user.
++ Typing cd - changes the working directory to the previous one.
+
+#### ls
+
++ It is used to list the contents of a directory.
++ It can be used in the following different ways:
+- ls: List the files in the working directory.
+- ls /bin: List the files in the /bin directory (or any other directory we care to specify).
+- ls -l: List the files in the working directory in long format.
+- ls -l /etc /bin: List the files in the /bin directory and the /etc directory in long format.
+- ls -la ..: List all files (even ones with names beginning with a period character, which are normally hidden) in the parent of the working directory in long format.
+- ls -a: List all files, even those with names that begin with a period, which are normally not listed (that is, hidden).
+- ls -A: Like the -a option above except it does not list . (current directory) and .. (parentdirectory).
+- ls -d: Ordinarily, if a directory is specified, ls will list the contents of the directory, not the directory itself. Use this option in conjunction with the -l option to see details about the directory rather than its contents.
+- ls -F: This option will append an indicator character to the end of each listed name. For example, a forward slash (/) if the name is a directory.
+- ls -h: In long format listings, display file sizes in human readable format rather than in bytes.
+- ls -r: Display the results in reverse order. Normally, ls displays its results in ascending alphabetical order.
+- ls -S: Sort results by file size.
+- ls -t: Sort by modification time. 
+
+
+**NOTE:** * Most commands operate like this: command -options arguments where:
+- command is the name of the command
+- -options is one or more adjustments to the command's behavior
+- arguments is one or more "things" upon which the command operates.
++ In the case of ls, we see that ls is the name of the command, and that it can have one or more options, such as -a and -l, and it can operate on one or more files or directories.
+
++ Other important commands are:
+
+#### less
+
++ This program lets us view text files. This is very handy since many of the files used to control and configure Linux are human readable.
++ The less program is invoked by simply typing: *less text_file*
++ Once started, less will display the text file one page at a time. We can use the Page Up and Page Down keys to move through the text file. To exit less, we type "q".
+
+#### file
+
++ It is used to determine what kind of data a file contains before we try to view it. File command will examine a file and tell us what kind of file it is.
++ To use the file program, we just type: *file name_of_file*
+
+#### link files
+
++ They are of 2 types:
+
+1. **Soft links**
++ This is a special kind of a file called a *symbolic link* or *sym-link.*
++ It makes it possible to have a file referenced by multiple names. While the value of this might not be obvious, it is really a useful feature.
++ Picture this scenario: A program requires the use of a shared resource of some kind contained in a file named “foo,” but “foo” has frequent version changes. It would be good to
+include the version number in the filename so the administrator or other interested party could see what version of “foo” is installed. This presents a problem. If we change the name of the shared resource, we have to track down every program that might use it and change it to look for a new resource name every time a new version of the resource is installed. That doesn't sound like fun at all.Here is where symbolic links save the day. Suppose we install version 2.6 of “foo,” which has the filename “foo-2.6” and then create a symbolic link simply called “foo” that points to “foo-2.6.” This means that when a program opens the file “foo”, it is actually opening the file “foo-2.6”. Now everybody is happy. The programs that rely on “foo” can find it and we can still see what actual version is installed. When it is time to upgrade to “foo2.7,” we just add the file to our system, delete the symbolic link “foo” and create a new one that points to the new version. Not only does this solve the problem of the version upgrade, but it also allows us to keep both versions on our machine. Imagine that “foo2.7” has a bug (damn those developers!) and we need to revert to the old version. Again, we just delete the symbolic link pointing to the new version and create a new symbolic link pointing to the old version.
++ Symbolic links were created to overcome the limitations of hard links. Symbolic links work by creating a special type of file that contains a text pointer to the referenced file or directory. In this regard, they operate in much the same way as a Windows shortcut, though of course they predate the Windows feature by many years.A file pointed to by a symbolic link, and the symbolic link itself are largely indistinguishable from one another. For example, if we write something to the symbolic link, the referenced file is written to. However when we delete a symbolic link, only the link is deleted, not the file itself. If the file is deleted before the symbolic link, the link will continue to exist but will point to nothing. In this case, the link is said to be broken. In many implementations, the ls command will display broken links in a distinguishing color, such as red, to reveal their presence.
+
+2. **Hard links**
+
++ Hard links are the original Unix way of creating links, compared to symbolic links, which
+33
+4 – Manipulating Files and Directories
+are more modern. By default, every file has a single hard link that gives the file its name.
+When we create a hard link, we create an additional directory entry for a file. Hard links
+have two important limitations:
+1. A hard link cannot reference a file outside its own file system. This means a link cannot reference a file that is not on the same disk partition as the link itself.
+2. A hard link may not reference a directory.
+
++ A hard link is indistinguishable from the file itself. Unlike a symbolic link, when we list a directory containing a hard link we will see no special indication of the link. When a hard link is deleted, the link is removed but the contents of the file itself continue to exist (that is, its space is not deallocated) until all links to the file are deleted.
+
+## Manipulating Files and directories
+
++ These five commands used most frequently are:
+
+1. cp – Copy files and directories
+
++The cp command copies files or directories. It can be used two different ways:
+
+1. cp item1 item2: copies the single file or directory item1 to the file or directory item2.
+2. cp item... directory: copies multiple items (either files or directories) into a directory.
+
++ Some of the common options with cp command are:
+- cp -a (--archive): Copy the files and directories and all of their attributes, including ownerships and permissions. Normally, copies take on the default attributes of the user performing the copy.
+- cp -i (--interactive): Before overwriting an existing file, prompt the user for confirmation. If this option is not specified, cp will silently (meaning there will be no warning) overwrite files.
+- cp -r (--recursive): Recursively copy directories and their contents. This option (or the -a option) is required when copying directories.
+- cp -u (--update): When copying files from one directory to another, only copy files that either do not exist or are newer than the existing corresponding files, in the destination directory. This is useful when copying large numbers of files as it skips files that don't need to be copied.
+- cp -v (--verbose): Display informative messages as the copy is performed.
+
+2. mv – Move/rename files and directories
+
++ The mv command performs both file moving and file renaming, depending on how it is used. In either case, the original filename no longer exists after the operation. mv is used in much the same way as cp.
+
+3. mkdir – Create directories
+
++ The mkdir command is used to create directories. It works like this:
+mkdir directory...
+A note on notation: When three periods follow an argument in the description of a command (as above), it means that the argument can be repeated, thus the following command:
+mkdir dir1 would create a single directory named dir1, while the following: mkdir dir1 dir2 dir3 would create three directories named dir1, dir2, and dir3.
+
+4. rm – Remove files and directories
+
++ The rm command is used to remove (delete) files and directories.
++ When used with --force(rm -f) it will ignore nonexistent files and do not prompt. This overrides the --interactive option.
+
+5. echo: this is used to write texts into a specified file i.e. echo ALX>file_1
+
+6. cat: this is used to read the texts in a file i.e cat file_1
+
+7. touch: this is used to create a file in the working directory i.e. touch file_1 
+
+## Wildcards
+
++ These are special characters that help you to rapidly specify groups of filenames. They allow you to select filenames based on patterns of characters. The list below shows the wildcards and what they select:
+
+- * Matches any characters e.g. 
+                - * all file names
+                - g* All filenames that begin with the character "g"
+                - b*.txt All filenames that begin with the character "b" and end with the characters ".txt"
+                - Data??? Any filename that begins with the characters "Data" followed by exactly 3 more characters
+                - [abc]* Any filename that begins with "a" or "b" or "c" followed by any other characters
+                - [[:upper:]]* Any filename that begins with an uppercase letter. This is an example of a character class.
+                - *[![:lower:]] Any filename that does not end with a lowercase letter.
+                - BACKUP. [[:digit:]] [[:digit:]] Another example of character classes. This pattern matches any filename that begins with the characters "BACKUP." followed by exactly two nume                                                  rals.
+- ? Matches any single character
+- [characters] Matches specified characters as shown:
+                - [:alphnum:] alphanumeric characters
+                - [:alpha:] alphabetic characters
+                - [:digit:] numerals
+                - [:upper:] uppercase alphabetic characters
+                - [:lower:] lowercase alphabetic characters
+- [!characters] Matches any character that is not a member of the set characters    
